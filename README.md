@@ -1,3 +1,6 @@
+#  Project structure
+![Project structure](https://github.com/angelabenusa/Books-Library/blob/main/images/structure.png)
+
 # Library
 
 Library prosty system do zarządzania książkami w bibliotece.
