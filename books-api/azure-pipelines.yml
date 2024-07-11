@@ -1,0 +1,42 @@
+steps:
+- bash: |
+    python3 -m venv venv 
+    source venv/bin/activate
+    venv/bin/pip install --upgrade pip
+  displayName: 'venv'
+
+- bash: |
+    venv/bin/python -m pip install -r requirements-dev.txt
+  displayName: 'requirements'
+
+- bash: |
+    venv/bin/python -m black . --check
+    venv/bin/python -m flake8 .
+    venv/bin/python -m isort . --check
+    venv/bin/python -m mypy .
+  displayName: 'lint'
+  continueOnError: true
+
+- bash: |
+    venv/bin/python3 -m pytest -v
+  displayName: 'test'
+  continueOnError: true
+
+- bash: |
+    cp lambda_function.py python/
+    (cd python; zip -r ../app ./)
+  displayName: 'package'
+
+- task: CopyFiles@2
+  displayName: 'stage files'
+  inputs:
+    Contents: app.zip
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+    failOnEmptyInputs: true
+
+- task: PublishBuildArtifacts@1
+  displayName: 'publish'
+
+- bash: |
+    ls *
+  displayName: 'list files'

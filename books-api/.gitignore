@@ -1,0 +1,6 @@
+python/
+*.zip
+venv/
+.idea
+__pycache__/
+.bashrc
